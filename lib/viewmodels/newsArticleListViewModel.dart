@@ -10,11 +10,15 @@ class NewsArticleListViewModel extends ChangeNotifier {
   List<NewsArticleViewModel> articles = List<NewsArticleViewModel>();
 
   Future<void> search(String keyword) async {
+    this.loadingStatus = LoadingStatus.searching;
+    notifyListeners();
     List<NewsArticle> newsArticles =
         await WebService().fetchHeadlinesByKeyword(keyword);
     this.articles = newsArticles
         .map((article) => NewsArticleViewModel(article: article))
         .toList();
+    this.loadingStatus =
+        this.articles.isEmpty ? LoadingStatus.empty : LoadingStatus.completed;
     notifyListeners();
   }
 
